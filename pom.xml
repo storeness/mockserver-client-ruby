@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.mock-server</groupId>
+        <artifactId>mockserver</artifactId>
+        <version>3.9.17-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mockserver-client-ruby</artifactId>
+    <name>MockServer Ruby Client</name>
+    <description>A ruby client for the MockServer</description>
+    <url>http://www.mock-server.com</url>
+
+    <properties>
+        <skipRubyRelease>true</skipRubyRelease>
+        <skipRubyBuild>false</skipRubyBuild>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <id>bundle_install</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipRubyBuild}</skip>
+                            <executable>bundle</executable>
+                            <arguments>
+                                <argument>install</argument>
+                                <argument>--path</argument>
+                                <argument>vendor/bundle</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <BUNDLE_GEMFILE>${basedir}/Gemfile</BUNDLE_GEMFILE>
+                            </environmentVariables>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ruby_make</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipRubyBuild}</skip>
+                            <executable>bundle</executable>
+                            <arguments>
+                                <argument>exec</argument>
+                                <argument>rake</argument>
+                                <argument>build</argument>
+                                <argument>spec</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <BUNDLE_GEMFILE>${basedir}/Gemfile</BUNDLE_GEMFILE>
+                            </environmentVariables>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ruby_release</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipRubyRelease}</skip>
+                            <executable>bundle</executable>
+                            <arguments>
+                                <argument>exec</argument>
+                                <argument>rake</argument>
+                                <argument>release</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <BUNDLE_GEMFILE>${basedir}/Gemfile</BUNDLE_GEMFILE>
+                            </environmentVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
